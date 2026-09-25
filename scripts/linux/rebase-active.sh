@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "This experiment is disabled: the tested D-Bus sequence opens a new Inkscape window instead of updating the active document." >&2
+echo "See docs/EXPERIMENT-2026-09-25.md for details." >&2
+exit 5
+
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 /absolute/path/document.svg" >&2
   exit 2

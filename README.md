@@ -17,25 +17,23 @@ The project is intended to be cross-platform. The XML/SVG core must therefore re
 
 ## Current status
 
-The following workflow has been tested successfully on Linux:
+The following capabilities have been tested successfully on Linux:
 
 1. A running Inkscape instance publishes `org.inkscape.Inkscape` on the user session D-Bus.
-2. The agent activates the `file-rebase` application action with the value `true`.
-3. The agent calls `org.gtk.Application.Open` with the URI of the modified SVG.
-4. The active document updates immediately.
-5. Window actions such as `canvas-zoom-page` can be invoked directly over D-Bus.
+2. Window actions such as `canvas-zoom-page` can be invoked directly over D-Bus.
+3. SVG documents containing pages, guides, objects, and text can be generated safely as files.
+
+Live replacement of the active document has **not** been verified. The attempted two-call `file-rebase` and `org.gtk.Application.Open` sequence opened a new Inkscape window for every update instead of replacing the original active document.
 
 The Windows and macOS transports have not been verified yet.
 
 ## Quick Linux test
 
-Open a disposable test document in Inkscape and run:
+The former `rebase-active.sh` experiment is disabled because it opened a new window instead of updating the active document. Read the experiment log before attempting another transport implementation:
 
 ```bash
-./scripts/linux/rebase-active.sh examples/a4-landscape-test.svg
+less docs/EXPERIMENT-2026-09-25.md
 ```
-
-The script replaces the contents of the active document. Use it only with a test document or a saved backup.
 
 ## Proposed architecture
 
@@ -71,7 +69,7 @@ Start with [docs/HANDOVER.md](docs/HANDOVER.md) when resuming the project. See [
 ## Roadmap
 
 - [x] Verify control of a running Inkscape instance over Linux D-Bus.
-- [x] Verify live document updates through `file-rebase`.
+- [ ] Find a reliable method for live document updates without opening a new window.
 - [x] Verify objects, text, pages, and guides.
 - [ ] Read the latest document state before every change.
 - [ ] Implement structured XML operations and diffs.

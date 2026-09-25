@@ -21,7 +21,7 @@ gdbus call --session \
 
 The command changed the active window view to fit the page.
 
-## Verified document update
+## Document update attempt
 
 Running only:
 
@@ -31,7 +31,7 @@ inkscape --active-window --actions=file-rebase:true file.svg
 
 did not change the active document in the tested AppImage build. A successful process exit is therefore not evidence of a visible update.
 
-A direct two-step D-Bus sequence worked.
+A direct two-step D-Bus sequence initially appeared to work because the generated content became visible. Later inspection showed that it opened a new window for every call rather than changing the original active document.
 
 ### Step 1: enable rebase mode
 
@@ -53,7 +53,9 @@ gdbus call --session \
   "['file:///absolute/path/file.svg']" "" "{}"
 ```
 
-This sequence replaced the live contents of the active test document.
+This sequence did **not** replace the live contents of the original test document. It opened the supplied SVG as a new document window. After four edits, D-Bus introspection showed `window/1` through `window/4` and `document/1` through `document/4`.
+
+The likely reason is that `file-rebase(true)` and `Application.Open` were separate D-Bus calls, so the rebase intent did not carry into the later open operation. This remains a hypothesis until the Inkscape implementation is inspected or a single atomic invocation is found.
 
 ## Content tested in practice
 
@@ -67,7 +69,7 @@ This sequence replaced the live contents of the active test document.
 ## Important findings
 
 - Inkscape's XML Editor operates on the live internal XML tree.
-- An external rebase replaces the entire tree and can overwrite unsaved manual changes.
+- The tested two-call sequence opens a new window and must not be described as an active-document rebase.
 - A D-Bus `()` response confirms that the call was accepted, not that the visual result is correct.
 - Result verification must be part of the future adapter.
 - Stable object IDs and document structure are essential for targeted changes.

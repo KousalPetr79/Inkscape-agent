@@ -57,12 +57,14 @@ Before making a change:
 
 #### Linux
 
-The tested path uses GTK/GApplication over the session D-Bus:
+The tested discovery and action path uses GTK/GApplication over the session D-Bus:
 
 - service: `org.inkscape.Inkscape`;
 - application object: `/org/inkscape/Inkscape`;
 - window: `/org/inkscape/Inkscape/window/1`;
 - document: `/org/inkscape/Inkscape/document/1`.
+
+Direct window actions are confirmed. Active-document replacement is not confirmed: a two-call `file-rebase` followed by `org.gtk.Application.Open` opened a new window because the rebase state did not carry across the separate calls.
 
 #### Windows
 
@@ -86,6 +88,7 @@ A small Inkscape extension may provide the best shared cross-platform layer. It 
 ## Open problems
 
 - Reliably reading an unsaved live document.
+- Updating the active document without opening a new window.
 - Preserving Inkscape Undo history across a rebase.
 - Synchronizing manual and agent changes.
 - Selecting the correct window when multiple documents are open.

@@ -6,21 +6,22 @@ Build a safe, cross-platform agent that can inspect and control Inkscape compreh
 
 ## Current state
 
-Linux control has been verified against a running Inkscape AppImage through the session D-Bus.
+Partial Linux control has been verified against a running Inkscape AppImage through the session D-Bus.
 
 Verified capabilities:
 
 - discover the running `org.inkscape.Inkscape` service;
 - invoke window actions such as `canvas-zoom-page`;
-- replace the active document tree through the two-step `file-rebase` and `org.gtk.Application.Open` sequence;
 - create and modify pages, guides, rectangles, and text through SVG/XML;
-- observe the result immediately in the active Inkscape window.
+- open generated SVG documents in Inkscape.
+
+The attempted two-step `file-rebase` and `org.gtk.Application.Open` sequence did **not** replace the original active document. Every `Application.Open` call created a new Inkscape window. Four edits resulted in four windows and four document objects. Treat active-document replacement as unverified.
 
 The exact experiment and commands are recorded in [EXPERIMENT-2026-09-25.md](EXPERIMENT-2026-09-25.md).
 
 ## Important limitation
 
-The current Linux prototype replaces the complete active SVG tree. It does not yet read unsaved live changes back from Inkscape. A rebase can therefore overwrite manual edits that have not been captured in the source SVG.
+The current Linux prototype cannot update the original active SVG tree. It also does not read unsaved live changes back from Inkscape. The misleading `rebase-active.sh` experiment is intentionally disabled until a reliable transport is found.
 
 Use disposable documents or explicit backups only.
 
@@ -63,7 +64,7 @@ A zero exit code is not sufficient evidence. The visible document state must be 
 
 ## Decision after the Windows test
 
-- If `--active-window` and `file-rebase` work reliably, implement a Windows CLI adapter.
+- If `--active-window` and `file-rebase` update the original window reliably, implement a Windows CLI adapter.
 - If they do not, prototype a standard Python/inkex Inkscape extension as the cross-platform bridge.
 - Do not introduce GUI coordinate automation unless no semantic interface is available.
 
