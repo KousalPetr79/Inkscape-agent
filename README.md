@@ -56,7 +56,7 @@ transport adapter
 running Inkscape instance
 ```
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for design details and [docs/EXPERIMENT-2026-09-25.md](docs/EXPERIMENT-2026-09-25.md) for the first experiment log.
+Start with [docs/HANDOVER.md](docs/HANDOVER.md) when resuming the project. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for design details and [docs/EXPERIMENT-2026-09-25.md](docs/EXPERIMENT-2026-09-25.md) for the first experiment log.
 
 ## Safety rules
 
