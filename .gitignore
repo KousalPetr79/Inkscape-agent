@@ -8,3 +8,14 @@ build/
 .vscode/
 *.bak
 *.tmp
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+auth.json
+token.json

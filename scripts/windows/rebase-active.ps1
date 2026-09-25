@@ -8,7 +8,7 @@ param(
 $ErrorActionPreference = "Stop"
 $resolved = (Resolve-Path -LiteralPath $SvgPath).Path
 
-Write-Warning "Tento Windows transport zatím nebyl prakticky ověřen. Používejte pouze testovací dokument."
+Write-Warning "This Windows transport has not been tested yet. Use a disposable test document only."
 
 & $InkscapeCommand `
     --active-window `
@@ -16,7 +16,7 @@ Write-Warning "Tento Windows transport zatím nebyl prakticky ověřen. Použív
     $resolved
 
 if ($LASTEXITCODE -ne 0) {
-    throw "Inkscape skončil s návratovým kódem $LASTEXITCODE."
+    throw "Inkscape exited with code $LASTEXITCODE."
 }
 
-Write-Host "Příkaz byl odeslán. Vizuálně ověřte, zda se aktivní dokument změnil."
+Write-Host "The command was sent. Verify visually that the active document changed."

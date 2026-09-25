@@ -1,15 +1,15 @@
 # Linux/D-Bus experiment — 2026-09-25
 
-## Prostředí
+## Environment
 
-- Linux desktop se session D-Bus.
-- Inkscape spuštěný jako AppImage.
-- Na sběrnici byla nalezena služba `org.inkscape.Inkscape`.
-- Inkscape exportoval aplikační, okenní a dokumentové skupiny `org.gtk.Actions`.
+- Linux desktop with a session D-Bus.
+- Inkscape running as an AppImage.
+- The `org.inkscape.Inkscape` service was present on the bus.
+- Inkscape exported application, window, and document `org.gtk.Actions` groups.
 
-## Ověřené akce
+## Verified actions
 
-Neškodný vizuální test:
+Non-destructive visual test:
 
 ```bash
 gdbus call --session \
@@ -19,21 +19,21 @@ gdbus call --session \
   canvas-zoom-page "[]" "{}"
 ```
 
-Příkaz změnil pohled aktivního okna na celou stránku.
+The command changed the active window view to fit the page.
 
-## Ověřená aktualizace dokumentu
+## Verified document update
 
-Samotné spuštění:
+Running only:
 
 ```bash
 inkscape --active-window --actions=file-rebase:true file.svg
 ```
 
-v testovaném AppImage aktivní dokument nezměnilo. Úspěšný návratový kód proto není důkazem vizuální změny.
+did not change the active document in the tested AppImage build. A successful process exit is therefore not evidence of a visible update.
 
-Funkční byla až přímá dvoukroková D-Bus sekvence.
+A direct two-step D-Bus sequence worked.
 
-### Krok 1: aktivace režimu rebase
+### Step 1: enable rebase mode
 
 ```bash
 gdbus call --session \
@@ -43,31 +43,31 @@ gdbus call --session \
   file-rebase "[<true>]" "{}"
 ```
 
-### Krok 2: předání SVG stejné instanci
+### Step 2: pass the SVG to the same instance
 
 ```bash
 gdbus call --session \
   --dest org.inkscape.Inkscape \
   --object-path /org/inkscape/Inkscape \
   --method org.gtk.Application.Open \
-  "['file:///absolutni/cesta/file.svg']" "" "{}"
+  "['file:///absolute/path/file.svg']" "" "{}"
 ```
 
-Tato sekvence nahradila živý obsah aktivního testovacího dokumentu.
+This sequence replaced the live contents of the active test document.
 
-## Prakticky ověřený obsah
+## Content tested in practice
 
-- stránka A4 na šířku, 297 × 210 mm,
-- vodítka 5 mm od všech okrajů,
-- svislé středové vodítko na x = 148,5 mm,
-- obdélník 100 × 50 mm,
-- text `Test` s `textLength="50"`,
-- přesun obdélníku a textu na středové vodítko.
+- An A4 landscape page, 297 × 210 mm.
+- Guides 5 mm from every edge.
+- A vertical center guide at x = 148.5 mm.
+- A 100 × 50 mm rectangle.
+- `Test` text using `textLength="50"`.
+- Moving the rectangle and text to the center guide.
 
-## Důležité poznatky
+## Important findings
 
-- XML Editor Inkscape pracuje se živým interním XML stromem.
-- Externí rebase nahrazuje celý strom a může přepsat neuložené ruční změny.
-- D-Bus odpověď `()` potvrzuje přijetí volání, nikoliv sama o sobě správný vizuální výsledek.
-- Ověření výsledku musí být součástí budoucího adaptéru.
-- ID objektů a stabilní struktura dokumentu jsou zásadní pro cílené změny.
+- Inkscape's XML Editor operates on the live internal XML tree.
+- An external rebase replaces the entire tree and can overwrite unsaved manual changes.
+- A D-Bus `()` response confirms that the call was accepted, not that the visual result is correct.
+- Result verification must be part of the future adapter.
+- Stable object IDs and document structure are essential for targeted changes.

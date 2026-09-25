@@ -2,18 +2,18 @@
 set -euo pipefail
 
 if [[ $# -ne 1 ]]; then
-  echo "Použití: $0 /absolutni/cesta/dokument.svg" >&2
+  echo "Usage: $0 /absolute/path/document.svg" >&2
   exit 2
 fi
 
 svg_path=$(realpath "$1")
 if [[ ! -f "$svg_path" ]]; then
-  echo "Soubor neexistuje: $svg_path" >&2
+  echo "File does not exist: $svg_path" >&2
   exit 2
 fi
 
 if ! command -v gdbus >/dev/null 2>&1; then
-  echo "Chybí příkaz gdbus." >&2
+  echo "The gdbus command is required." >&2
   exit 3
 fi
 
@@ -22,7 +22,7 @@ if ! gdbus call --session \
   --object-path /org/freedesktop/DBus \
   --method org.freedesktop.DBus.NameHasOwner \
   org.inkscape.Inkscape | grep -q true; then
-  echo "Běžící Inkscape nebyl na session D-Bus nalezen." >&2
+  echo "No running Inkscape instance was found on the session D-Bus." >&2
   exit 4
 fi
 
@@ -46,4 +46,4 @@ gdbus call --session \
   --method org.gtk.Actions.Activate \
   canvas-zoom-page "[]" "{}"
 
-echo "Aktivní dokument byl aktualizován z: $svg_path"
+echo "The active document was updated from: $svg_path"
